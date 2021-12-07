@@ -88,13 +88,17 @@ public class UsuarioController {
             return new ResponseEntity<>(new Mensaje("Ese nombre ya existe"), HttpStatus.BAD_REQUEST);
         if(usuarioService.existsByEmail(nuevoUsuario.getEmail()))
             return new ResponseEntity<>(new Mensaje("Ese email ya existe"), HttpStatus.BAD_REQUEST);
-        Usuario usuario =
-                new Usuario();
+
         Set<Rol> roles = new HashSet<>();
+        String password = nuevoUsuario.getPassword();
+        password = passwordEncoder.encode(nuevoUsuario.getPassword());
+        nuevoUsuario.setPassword(password);
+        
         roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
         if(nuevoUsuario.getRoles().contains("ADMIN"))
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
-        usuario.setRoles(roles);
+        nuevoUsuario.setRoles(roles);
+
         usuarioService.save(nuevoUsuario);
         return new ResponseEntity<>(new Mensaje("Usuario guardado"), HttpStatus.CREATED);
     }

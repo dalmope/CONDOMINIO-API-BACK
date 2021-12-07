@@ -40,7 +40,6 @@ public class Usuario {
     @Basic(optional = false)
     @Column(name = "password")
     private String password;
-    @Basic(optional = false)
     @Column(name = "tokenPassword")
     private String tokenPassword;
     @JoinTable(name = "usuario_rol", joinColumns = {
@@ -66,12 +65,8 @@ public class Usuario {
         this.password = password;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getTipoDoc() {
