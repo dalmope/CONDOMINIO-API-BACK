@@ -31,6 +31,7 @@ public class EstadoCuentaController {
     @Autowired
     EstadoCuentaService estadoCuentaService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation("Muestra una lista de Estados de cuenta")
     @GetMapping
     public ResponseEntity<List<EstadoCuenta>> list(){
@@ -38,6 +39,7 @@ public class EstadoCuentaController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!estadoCuentaService.existsById(id)){
@@ -47,8 +49,9 @@ public class EstadoCuentaController {
         return new ResponseEntity<>(estadoCuenta, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/estado/{estado}")
-    public ResponseEntity<?> getByNombre(@PathVariable("estado") String estado){
+    public ResponseEntity<?> getByEstado(@PathVariable("estado") String estado){
         if(!estadoCuentaService.existsByEstado(estado))
             return new ResponseEntity<>(new Mensaje("Ese tipo de estado de cuenta ya existe"), HttpStatus.NOT_FOUND);
         EstadoCuenta estadoCuenta = estadoCuentaService.findByEstado(estado).get();
