@@ -14,7 +14,7 @@
 	<name>API</name>
 	<description>Aplication for API</description>
 	<properties>
-		<java.version>16</java.version>
+		<java.version>11</java.version>
 	</properties>
 
 	<dependencies>
