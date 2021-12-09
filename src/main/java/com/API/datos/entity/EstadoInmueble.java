@@ -5,21 +5,21 @@
 package com.API.datos.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -30,21 +30,24 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @NamedQueries({
     @NamedQuery(name = "EstadoInmueble.findAll", query = "SELECT e FROM EstadoInmueble e"),
     @NamedQuery(name = "EstadoInmueble.findById", query = "SELECT e FROM EstadoInmueble e WHERE e.id = :id"),
-    @NamedQuery(name = "EstadoInmueble.findByEstado", query = "SELECT e FROM EstadoInmueble e WHERE e.estado = :estado")})
+    @NamedQuery(name = "EstadoInmueble.findByEstado", query = "SELECT e FROM EstadoInmueble e WHERE e.estado = :estado"),
+    @NamedQuery(name = "EstadoInmueble.findByFecha", query = "SELECT e FROM EstadoInmueble e WHERE e.fecha = :fecha")})
 public class EstadoInmueble implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     private Integer id;
-    @Basic(optional = false)
-    @Column(name = "estado")
+    @Column(name = "estado", nullable = false, length = 255)
     private String estado;
-    @JsonIgnore
-    @JsonManagedReference(value = "estadoInmueble")
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estadoId")
+    @Column(name = "fecha", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fecha;
+    @JoinTable(name = "estado_estadoinmueble", joinColumns = {
+        @JoinColumn(name = "id_estadoInmueble", referencedColumnName = "ID")}, inverseJoinColumns = {
+        @JoinColumn(name = "id_inmueble", referencedColumnName = "ID")})
+    @ManyToMany
     private List<Inmuebles> inmueblesList;
 
     public EstadoInmueble() {
@@ -54,9 +57,10 @@ public class EstadoInmueble implements Serializable {
         this.id = id;
     }
 
-    public EstadoInmueble(Integer id, String estado) {
+    public EstadoInmueble(Integer id, String estado, Date fecha) {
         this.id = id;
         this.estado = estado;
+        this.fecha = fecha;
     }
 
     public Integer getId() {
@@ -73,6 +77,14 @@ public class EstadoInmueble implements Serializable {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
     public List<Inmuebles> getInmueblesList() {

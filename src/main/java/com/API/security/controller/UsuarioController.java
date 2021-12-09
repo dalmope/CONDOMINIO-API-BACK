@@ -17,6 +17,7 @@ import com.API.security.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
@@ -53,6 +54,7 @@ public class UsuarioController {
     JwtProvider jwtProvider;
 
     @ApiOperation("Muestra una lista de usuarios")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<Usuario>> list(){
         List<Usuario> list = usuarioService.listar();
@@ -60,12 +62,14 @@ public class UsuarioController {
     }
 
     @ApiOperation("Muestra un usuario")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> get(@PathVariable("id")int id){
         Usuario usuario = usuarioService.getById(id).get();
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation("Borra un usuario por ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id")int id){
@@ -73,6 +77,7 @@ public class UsuarioController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation("Actualiza un usuario")
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> update(@PathVariable("id")int id, @RequestBody Usuario usuario){
@@ -80,6 +85,7 @@ public class UsuarioController {
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> nuevo(@Valid @RequestBody Usuario nuevoUsuario, BindingResult bindingResult){
         if(bindingResult.hasErrors())

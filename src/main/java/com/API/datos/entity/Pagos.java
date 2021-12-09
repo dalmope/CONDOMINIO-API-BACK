@@ -38,14 +38,13 @@ public class Pagos implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "fecha_pago")
+    @Column(name = "fecha_pago", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date fechaPago;
-    @JoinColumn(name = "id_cuenta", referencedColumnName = "ID")
-    @JsonBackReference(value = "cuenta-pagos")
+    @JoinColumn(name = "id_cuenta", referencedColumnName = "ID", nullable = false)
     @ManyToOne(optional = false)
     private Cuenta idCuenta;
 
@@ -77,6 +76,7 @@ public class Pagos implements Serializable {
         this.fechaPago = fechaPago;
     }
 
+    @JsonBackReference(value = "pagos_cuenta")
     public Cuenta getIdCuenta() {
         return idCuenta;
     }
@@ -94,7 +94,6 @@ public class Pagos implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Pagos)) {
             return false;
         }

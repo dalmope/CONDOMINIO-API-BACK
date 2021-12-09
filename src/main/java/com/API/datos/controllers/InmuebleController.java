@@ -31,6 +31,7 @@ public class InmuebleController {
     @Autowired
     InmuebleService inmuebleService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation("Muestra una lista Inmuebles")
     @GetMapping
     public ResponseEntity<List<Inmuebles>> list(){
@@ -38,6 +39,7 @@ public class InmuebleController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation("Obtiene un Inmueble por su id")
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") int id){
@@ -47,6 +49,7 @@ public class InmuebleController {
         Inmuebles inmueble = inmuebleService.getOne(id).get();
         return new ResponseEntity<>(inmueble, HttpStatus.OK);
     }
+
 
     @ApiOperation("Crea un Inmueble")
     @PreAuthorize("hasRole('ADMIN')")

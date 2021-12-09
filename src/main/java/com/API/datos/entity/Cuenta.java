@@ -24,7 +24,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 
 /**
  *
@@ -43,41 +45,32 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
     @NamedQuery(name = "Cuenta.findByRecargo", query = "SELECT c FROM Cuenta c WHERE c.recargo = :recargo")})
 public class Cuenta implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     private Integer id;
-    @Basic(optional = false)
-    @Column(name = "deuda_mensual")
+    @Column(name = "deuda_mensual", nullable = false)
     private float deudaMensual;
-    @Basic(optional = false)
-    @Column(name = "meses_mora")
+    @Column(name = "meses_mora", nullable = false)
     private int mesesMora;
-    @Basic(optional = false)
-    @Column(name = "total")
+    @Column(name = "total", nullable = false)
     private float total;
-    @Basic(optional = false)
-    @Column(name = "fecha_emision")
+    @Column(name = "fecha_emision", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date fechaEmision;
-    @Basic(optional = false)
-    @Column(name = "fecha_limite")
+    @Column(name = "fecha_limite", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date fechaLimite;
     @Basic(optional = false)
-    @Column(name = "recargo")
+    @Column(name = "recargo", nullable = false)
     private float recargo;
-    @JsonBackReference(value = "cuenta_estado")
-    @JoinColumn(name = "estado_id", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @JoinColumn(name = "estado_id", referencedColumnName = "ID", nullable = false)
+    @ManyToOne
     private EstadoCuenta estadoId;
-    @JsonBackReference(value = "inmuebles")
-    @JoinColumn(name = "id_inmueble", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_inmueble", referencedColumnName = "ID", nullable = false)
+    @ManyToOne
     private Inmuebles idInmueble;
-    @JsonManagedReference(value = "cuenta-pagos")
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCuenta")
     private List<Pagos> pagosList;
 
@@ -154,6 +147,7 @@ public class Cuenta implements Serializable {
         this.recargo = recargo;
     }
 
+    @JsonBackReference(value = "estado_cuenta")
     public EstadoCuenta getEstadoId() {
         return estadoId;
     }
@@ -162,6 +156,7 @@ public class Cuenta implements Serializable {
         this.estadoId = estadoId;
     }
 
+    @JsonBackReference(value = "inmueble_cuenta")
     public Inmuebles getIdInmueble() {
         return idInmueble;
     }
@@ -170,6 +165,7 @@ public class Cuenta implements Serializable {
         this.idInmueble = idInmueble;
     }
 
+    @JsonManagedReference(value = "pagos_cuenta")
     public List<Pagos> getPagosList() {
         return pagosList;
     }
@@ -204,3 +200,4 @@ public class Cuenta implements Serializable {
     }
     
 }
+

@@ -10,10 +10,12 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -23,8 +25,7 @@ import javax.persistence.Table;
 import com.API.security.entity.Usuario;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 /**
  *
  * @author David Alberto Mora Peñaranda
@@ -34,29 +35,29 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "Inmuebles.findAll", query = "SELECT i FROM Inmuebles i"),
     @NamedQuery(name = "Inmuebles.findById", query = "SELECT i FROM Inmuebles i WHERE i.id = :id"),
-    @NamedQuery(name = "Inmuebles.findByDireccion", query = "SELECT i FROM Inmuebles i WHERE i.direccion = :direccion")})
+    @NamedQuery(name = "Inmuebles.findByDireccion", query = "SELECT i FROM Inmuebles i WHERE i.direccion = :direccion"),
+    @NamedQuery(name = "Inmuebles.findByEstadoId", query = "SELECT i FROM Inmuebles i WHERE i.estadoId = :estadoId")})
 public class Inmuebles implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "direccion")
+    @Column(name = "direccion", nullable = false, length = 255)
     private String direccion;
+    @Basic(optional = false)
+    @Column(name = "estado_id", nullable = false)
+    private int estadoId;
+    @ManyToMany(mappedBy = "inmueblesList")
+    private List<EstadoInmueble> estadoInmuebleList;
     @JsonIgnore
-    @JsonBackReference(value = "inmuebles")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idInmueble")
     private List<Cuenta> cuentaList;
-    @JoinColumn(name = "estado_id", referencedColumnName = "ID")
-    @JsonBackReference(value="estadoInmueble")
-    @ManyToOne(optional = false)
-    private EstadoInmueble estadoId;
-    @JoinColumn(name = "id_usuario", referencedColumnName = "ID")
-    @JsonBackReference(value="usuario_inmueble")
-    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "ID", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Usuario idUsuario;
 
     public Inmuebles() {
@@ -70,9 +71,10 @@ public class Inmuebles implements Serializable {
         this.direccion = direccion;
     }
 
-    public Inmuebles(Integer id, String direccion) {
+    public Inmuebles(Integer id, String direccion, int estadoId) {
         this.id = id;
         this.direccion = direccion;
+        this.estadoId = estadoId;
     }
 
     public Integer getId() {
@@ -91,6 +93,23 @@ public class Inmuebles implements Serializable {
         this.direccion = direccion;
     }
 
+    public int getEstadoId() {
+        return estadoId;
+    }
+
+    public void setEstadoId(int estadoId) {
+        this.estadoId = estadoId;
+    }
+
+    public List<EstadoInmueble> getEstadoInmuebleList() {
+        return estadoInmuebleList;
+    }
+
+    public void setEstadoInmuebleList(List<EstadoInmueble> estadoInmuebleList) {
+        this.estadoInmuebleList = estadoInmuebleList;
+    }
+
+    @JsonManagedReference(value = "inmueble_cuenta")
     public List<Cuenta> getCuentaList() {
         return cuentaList;
     }
@@ -99,14 +118,7 @@ public class Inmuebles implements Serializable {
         this.cuentaList = cuentaList;
     }
 
-    public EstadoInmueble getEstadoId() {
-        return estadoId;
-    }
-
-    public void setEstadoId(EstadoInmueble estadoId) {
-        this.estadoId = estadoId;
-    }
-
+    @JsonBackReference(value = "inmueble_usuario")
     public Usuario getIdUsuario() {
         return idUsuario;
     }

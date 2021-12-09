@@ -47,7 +47,6 @@ public class Usuario {
                     @JoinColumn(name = "rol_id", referencedColumnName = "ID") })
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Rol> roles = new HashSet<>();
-    @JsonManagedReference(value = "usuario_inmueble")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuario")
     private Set<Inmuebles> inmueblesSet;
 
@@ -149,6 +148,7 @@ public class Usuario {
         this.telefono = telefono;
     }
 
+    @JsonManagedReference(value = "inmueble_usuario")
     public Set<Inmuebles> getInmueblesSet() {
         return inmueblesSet;
     }

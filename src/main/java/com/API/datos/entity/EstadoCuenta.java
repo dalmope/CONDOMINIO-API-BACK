@@ -18,9 +18,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 /**
  *
  * @author David Alberto Mora Peñaranda
@@ -37,13 +37,12 @@ public class EstadoCuenta implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     private Integer id;
     @Basic(optional = false)
-    @Column(name = "estado")
+    @Column(name = "estado", nullable = false, length = 255)
     private String estado;
     @JsonIgnore
-    @JsonManagedReference(value = "cuenta_estado")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estadoId")
     private List<Cuenta> cuentaList;
 
@@ -75,6 +74,7 @@ public class EstadoCuenta implements Serializable {
         this.estado = estado;
     }
 
+    @JsonManagedReference(value = "estado_cuenta")
     public List<Cuenta> getCuentaList() {
         return cuentaList;
     }
