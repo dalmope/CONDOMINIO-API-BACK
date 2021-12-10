@@ -57,10 +57,9 @@ public class InmuebleController {
     public ResponseEntity<?> create(@RequestBody Inmuebles inmueble){
         if(StringUtils.isBlank(inmueble.getDireccion()))
             return new ResponseEntity<>(new Mensaje("la direccion es obligatoria"), HttpStatus.BAD_REQUEST);
-        if(inmuebleService.existsById(inmueble.getId()))
-            return new ResponseEntity<>(new Mensaje("ya existe"), HttpStatus.BAD_REQUEST);
-        Inmuebles newInmueble = new Inmuebles(inmueble.getDireccion());
-        inmuebleService.save(newInmueble);
+        if(inmuebleService.existsByDireccion(inmueble.getDireccion()))
+            return new ResponseEntity<>(new Mensaje("Esa dirección ya se encuentra registrada"), HttpStatus.BAD_REQUEST);
+        inmuebleService.save(inmueble);
         return new ResponseEntity<>(new Mensaje("Inmueble creado"), HttpStatus.OK);
     }
 

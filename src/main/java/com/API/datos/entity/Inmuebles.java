@@ -35,28 +35,22 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @NamedQueries({
     @NamedQuery(name = "Inmuebles.findAll", query = "SELECT i FROM Inmuebles i"),
     @NamedQuery(name = "Inmuebles.findById", query = "SELECT i FROM Inmuebles i WHERE i.id = :id"),
-    @NamedQuery(name = "Inmuebles.findByDireccion", query = "SELECT i FROM Inmuebles i WHERE i.direccion = :direccion"),
-    @NamedQuery(name = "Inmuebles.findByEstadoId", query = "SELECT i FROM Inmuebles i WHERE i.estadoId = :estadoId")})
+    @NamedQuery(name = "Inmuebles.findByDireccion", query = "SELECT i FROM Inmuebles i WHERE i.direccion = :direccion")})
 public class Inmuebles implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "ID", nullable = false)
     private Integer id;
     @Basic(optional = false)
     @Column(name = "direccion", nullable = false, length = 255)
     private String direccion;
-    @Basic(optional = false)
-    @Column(name = "estado_id", nullable = false)
-    private int estadoId;
     @ManyToMany(mappedBy = "inmueblesList")
     private List<EstadoInmueble> estadoInmuebleList;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idInmueble")
     private List<Cuenta> cuentaList;
-    @JoinColumn(name = "id_usuario", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "ID")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Usuario idUsuario;
 
@@ -71,10 +65,9 @@ public class Inmuebles implements Serializable {
         this.direccion = direccion;
     }
 
-    public Inmuebles(Integer id, String direccion, int estadoId) {
+    public Inmuebles(Integer id, String direccion) {
         this.id = id;
         this.direccion = direccion;
-        this.estadoId = estadoId;
     }
 
     public Integer getId() {
@@ -91,14 +84,6 @@ public class Inmuebles implements Serializable {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
-    }
-
-    public int getEstadoId() {
-        return estadoId;
-    }
-
-    public void setEstadoId(int estadoId) {
-        this.estadoId = estadoId;
     }
 
     public List<EstadoInmueble> getEstadoInmuebleList() {

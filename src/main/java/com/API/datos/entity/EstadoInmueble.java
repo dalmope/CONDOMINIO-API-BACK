@@ -21,6 +21,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  *
  * @author David Alberto Mora Peñaranda
@@ -48,6 +50,7 @@ public class EstadoInmueble implements Serializable {
         @JoinColumn(name = "id_estadoInmueble", referencedColumnName = "ID")}, inverseJoinColumns = {
         @JoinColumn(name = "id_inmueble", referencedColumnName = "ID")})
     @ManyToMany
+    @JsonIgnore
     private List<Inmuebles> inmueblesList;
 
     public EstadoInmueble() {
