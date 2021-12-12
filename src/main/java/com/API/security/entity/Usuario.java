@@ -2,6 +2,7 @@ package com.API.security.entity;
 
 import javax.persistence.*;
 
+import com.API.datos.entity.Espacio;
 import com.API.datos.entity.Inmuebles;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -42,6 +43,11 @@ public class Usuario {
     private String password;
     @Column(name = "tokenPassword")
     private String tokenPassword;
+    @JoinTable(name = "usuario_espacio", joinColumns = {
+        @JoinColumn(name = "id_usuario", referencedColumnName = "ID")}, inverseJoinColumns = {
+        @JoinColumn(name = "id_espacio", referencedColumnName = "ID")})
+    @ManyToMany
+    private Set<Espacio> espacioSet;
     @JoinTable(name = "usuario_rol", joinColumns = {
             @JoinColumn(name = "usuario_id", referencedColumnName = "ID") }, inverseJoinColumns = {
                     @JoinColumn(name = "rol_id", referencedColumnName = "ID") })
@@ -130,6 +136,14 @@ public class Usuario {
 
     public void setTokenPassword(String tokenPassword) {
         this.tokenPassword = tokenPassword;
+    }
+
+    public Set<Espacio> getEspacioSet() {
+        return espacioSet;
+    }
+
+    public void setEspacioSet(Set<Espacio> espacioSet) {
+        this.espacioSet = espacioSet;
     }
 
     public Set<Rol> getRoles() {

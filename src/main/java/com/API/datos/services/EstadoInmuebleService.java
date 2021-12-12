@@ -1,7 +1,6 @@
 package com.API.datos.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.API.datos.entity.EstadoInmueble;
 import com.API.datos.repository.EstadoInmuebleRepository;
@@ -21,8 +20,8 @@ public class EstadoInmuebleService {
         return estadoInmuebleRepository.findAll();
     }
 
-    public Optional<EstadoInmueble> getOne(int id) {
-        return estadoInmuebleRepository.findById(id);
+    public EstadoInmueble getOne(Integer id) {
+        return estadoInmuebleRepository.findById(id).get();
     }
 
     public void save(EstadoInmueble estadoInmueble){

@@ -25,10 +25,6 @@ public class pagosService {
         return pagosRepository.findById(id);
     }
 
-    // public Optional<Pagos> getByNombre(String nombre){
-    //     return pagosRepository.findByNombre(nombre);
-    // }
-
     public void  save(Pagos pago){
         pagosRepository.save(pago);
     }
