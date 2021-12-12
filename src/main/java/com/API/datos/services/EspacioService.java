@@ -36,8 +36,4 @@ public class EspacioService {
         espacioRepository.deleteById(id);
     }
 
-    public List<Espacio> getEspaciosByNombre(String nombre) {
-        return espacioRepository.findByNombre(nombre);
-    }
-
 }

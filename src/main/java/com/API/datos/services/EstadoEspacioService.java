@@ -30,8 +30,4 @@ public class EstadoEspacioService {
         estadoEspacioRepository.deleteById(id);
     }
 
-    public Iterable<EstadoEspacio> listAllEstadoEspacioByNombre(String nombre) {
-        return estadoEspacioRepository.findByNombre(nombre);
-    }
-
 }

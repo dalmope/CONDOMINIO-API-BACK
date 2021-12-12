@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import com.API.datos.entity.Espacio;
 import com.API.datos.entity.Inmuebles;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.HashSet;
@@ -46,7 +47,7 @@ public class Usuario {
     @JoinTable(name = "usuario_espacio", joinColumns = {
         @JoinColumn(name = "id_usuario", referencedColumnName = "ID")}, inverseJoinColumns = {
         @JoinColumn(name = "id_espacio", referencedColumnName = "ID")})
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Espacio> espacioSet;
     @JoinTable(name = "usuario_rol", joinColumns = {
             @JoinColumn(name = "usuario_id", referencedColumnName = "ID") }, inverseJoinColumns = {

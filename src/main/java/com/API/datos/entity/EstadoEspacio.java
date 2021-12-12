@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  *
  * @author David Alberto Mora Peñaranda
@@ -43,6 +45,7 @@ public class EstadoEspacio implements Serializable {
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
+    @JsonIgnore
     @ManyToMany(mappedBy = "estadoEspacioSet")
     private Set<Espacio> espacioSet;
 

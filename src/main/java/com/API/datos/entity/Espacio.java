@@ -21,6 +21,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.API.security.entity.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -42,11 +43,12 @@ public class Espacio implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @Column(name = "ubicacion")
-    private int ubicacion;
+    private String ubicacion;
     @Basic(optional = false)
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
+    @JsonIgnore
     @ManyToMany(mappedBy = "espacioSet")
     private Set<Usuario> usuarioSet;
     @JoinTable(name = "estado_estadoespacio", joinColumns = {
@@ -62,7 +64,7 @@ public class Espacio implements Serializable {
         this.id = id;
     }
 
-    public Espacio(Integer id, int ubicacion, Date fecha) {
+    public Espacio(Integer id, String ubicacion, Date fecha) {
         this.id = id;
         this.ubicacion = ubicacion;
         this.fecha = fecha;
@@ -76,11 +78,11 @@ public class Espacio implements Serializable {
         this.id = id;
     }
 
-    public int getUbicacion() {
+    public String getUbicacion() {
         return ubicacion;
     }
 
-    public void setUbicacion(int ubicacion) {
+    public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
     }
 

@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EstadoEspacioRepository extends JpaRepository<EstadoEspacio, Integer> {
-
-    Iterable<EstadoEspacio> findByNombre(String nombre);
 }

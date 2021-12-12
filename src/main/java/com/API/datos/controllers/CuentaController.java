@@ -3,6 +3,7 @@ package com.API.datos.controllers;
 import java.util.List;
 
 import com.API.datos.entity.Cuenta;
+import com.API.datos.entity.Mensaje;
 import com.API.datos.services.CuentaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
-@RequestMapping("/Cuentas")
+@RequestMapping("/cuentas")
 @CrossOrigin(origins = "*")
 public class CuentaController {
     @Autowired
@@ -30,5 +34,16 @@ public class CuentaController {
         List<Cuenta> list = CuentaService.getCuentas();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation("Muestra una lista de Estados de cuenta")
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody Cuenta cuenta) {
+        CuentaService.save(cuenta);
+        return new ResponseEntity<>(new Mensaje("Cuenta Creado"), HttpStatus.OK);
+    }
+
+    
+
 
 }
