@@ -1,9 +1,15 @@
 package com.API.datos.controllers;
 
+import java.io.Console;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.API.datos.entity.EstadoInmueble;
 import com.API.datos.entity.Inmuebles;
 import com.API.datos.entity.Mensaje;
+import com.API.datos.services.EstadoInmuebleService;
 import com.API.datos.services.InmuebleService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +36,9 @@ public class InmuebleController {
 
     @Autowired
     InmuebleService inmuebleService;
+
+    @Autowired
+    EstadoInmuebleService estadoInmuebleService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation("Muestra una lista Inmuebles")
@@ -61,6 +70,25 @@ public class InmuebleController {
             return new ResponseEntity<>(new Mensaje("la direccion es obligatoria"), HttpStatus.BAD_REQUEST);
         if (inmuebleService.existsByDireccion(inmueble.getDireccion()))
             return new ResponseEntity<>(new Mensaje("Esa dirección ya se encuentra registrada"), HttpStatus.BAD_REQUEST);
+    
+        Set<EstadoInmueble> estados = new HashSet<>();
+        if(inmueble.getEstadoInmuebleList() != null) {
+            for(EstadoInmueble estado : inmueble.getEstadoInmuebleList()) {
+                if(estado.getId() <= 0) {
+                    return new ResponseEntity<>(new Mensaje("Id no valido"), HttpStatus.BAD_REQUEST);
+                }
+                if(!inmuebleService.existsById(estado.getId())) {
+                    return new ResponseEntity<>(new Mensaje("No existe el estado solicitado"), HttpStatus.NOT_FOUND);
+                }
+                estados.add(estado);
+            }
+        }
+        else {
+            estados.add(new EstadoInmueble(1));
+            System.out.println(estados);
+            inmueble.setEstadoInmuebleList(estados);
+        }
+
         inmuebleService.save(inmueble);
         return new ResponseEntity<>(new Mensaje("Inmueble creado"), HttpStatus.OK);
     }

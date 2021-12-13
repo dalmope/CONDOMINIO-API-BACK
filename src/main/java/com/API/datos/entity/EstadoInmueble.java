@@ -46,13 +46,6 @@ public class EstadoInmueble implements Serializable {
     @Column(name = "fecha", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
-    @JoinTable(name = "estado_estadoinmueble", joinColumns = {
-        @JoinColumn(name = "id_estadoInmueble", referencedColumnName = "ID")}, inverseJoinColumns = {
-        @JoinColumn(name = "id_inmueble", referencedColumnName = "ID")})
-    @ManyToMany
-    @JsonIgnore
-    private List<Inmuebles> inmueblesList;
-
     public EstadoInmueble() {
     }
 
@@ -88,14 +81,6 @@ public class EstadoInmueble implements Serializable {
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
-    }
-
-    public List<Inmuebles> getInmueblesList() {
-        return inmueblesList;
-    }
-
-    public void setInmueblesList(List<Inmuebles> inmueblesList) {
-        this.inmueblesList = inmueblesList;
     }
 
     @Override

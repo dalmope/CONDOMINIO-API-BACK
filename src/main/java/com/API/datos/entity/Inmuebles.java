@@ -6,6 +6,8 @@ package com.API.datos.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -45,8 +48,11 @@ public class Inmuebles implements Serializable {
     @Basic(optional = false)
     @Column(name = "direccion", nullable = false, length = 255)
     private String direccion;
-    @ManyToMany(mappedBy = "inmueblesList")
-    private List<EstadoInmueble> estadoInmuebleList;
+    @JoinTable(name = "estado_estadoinmueble", joinColumns = {
+        @JoinColumn(name = "id_estadoInmueble", referencedColumnName = "ID")}, inverseJoinColumns = {
+        @JoinColumn(name = "id_inmueble", referencedColumnName = "ID")})
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<EstadoInmueble> estadoInmuebleList;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idInmueble")
     private List<Cuenta> cuentaList;
@@ -86,11 +92,11 @@ public class Inmuebles implements Serializable {
         this.direccion = direccion;
     }
 
-    public List<EstadoInmueble> getEstadoInmuebleList() {
+    public Set<EstadoInmueble> getEstadoInmuebleList() {
         return estadoInmuebleList;
     }
 
-    public void setEstadoInmuebleList(List<EstadoInmueble> estadoInmuebleList) {
+    public void setEstadoInmuebleList(Set<EstadoInmueble> estadoInmuebleList) {
         this.estadoInmuebleList = estadoInmuebleList;
     }
 
