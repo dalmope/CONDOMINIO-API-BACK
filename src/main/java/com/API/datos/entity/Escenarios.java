@@ -10,11 +10,16 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
  *
@@ -31,8 +36,7 @@ public class Escenarios implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "nombre")
     private String nombre;
@@ -41,23 +45,18 @@ public class Escenarios implements Serializable {
 
     private boolean estado;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEscenarios")
     private Set<Alquiler> alquilerSet;
 
     public Escenarios() {
     }
 
-    
-
-
-
     public Escenarios(String nombre, String descripcion, boolean estado) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.estado = estado;
     }
-
-
 
 
 
@@ -96,7 +95,7 @@ public class Escenarios implements Serializable {
 
 
 
-
+    @JsonManagedReference(value = "alquiler_escenario")
     public Set<Alquiler> getAlquilerSet() {
         return alquilerSet;
     }

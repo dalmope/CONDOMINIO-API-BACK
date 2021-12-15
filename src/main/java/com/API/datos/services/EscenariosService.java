@@ -32,7 +32,7 @@ public class EscenariosService {
     }
 
     public boolean getByNombre(String nombre) {
-        return escenariosRepository.findByNombre(nombre);
+        return escenariosRepository.existsByNombre(nombre);
     }
 
     public void save(Escenarios Escenario){

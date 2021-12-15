@@ -2,8 +2,10 @@ package com.API.security.entity;
 
 import javax.persistence.*;
 
+import com.API.datos.entity.Alquiler;
 import com.API.datos.entity.Espacio;
 import com.API.datos.entity.Inmuebles;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.HashSet;
@@ -55,6 +57,10 @@ public class Usuario {
     private Set<Rol> roles = new HashSet<>();
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "idUsuario")
     private Set<Inmuebles> inmueblesSet;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEscenarios")
+    private Set<Alquiler> alquilerSet;
 
     public Usuario() {
     }
@@ -170,5 +176,16 @@ public class Usuario {
     public void setInmueblesSet(Set<Inmuebles> inmueblesSet) {
         this.inmueblesSet = inmueblesSet;
     }
+
+    @JsonManagedReference(value = "alquiler_usuario")
+    public Set<Alquiler> getAlquilerSet() {
+        return alquilerSet;
+    }
+
+    public void setAlquilerSet(Set<Alquiler> alquilerSet) {
+        this.alquilerSet = alquilerSet;
+    }
+
+    
     
 }

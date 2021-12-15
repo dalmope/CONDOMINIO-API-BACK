@@ -19,6 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.API.security.entity.Usuario;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  *
@@ -38,15 +39,19 @@ public class Alquiler implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+
     @Column(name = "hora_inicio")
     @Temporal(TemporalType.TIMESTAMP)
     private Date horaInicio;
+
     @Column(name = "hora_fin")
     @Temporal(TemporalType.TIMESTAMP)
     private Date horaFin;
+
     @JoinColumn(name = "id_escenarios", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Escenarios idEscenarios;
+
     @JoinColumn(name = "id_usuario", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Usuario idUsuario;
@@ -82,14 +87,17 @@ public class Alquiler implements Serializable {
         this.horaFin = horaFin;
     }
 
+    @JsonBackReference(value = "alquiler_escenario")
     public Escenarios getIdEscenarios() {
         return idEscenarios;
     }
 
+    
     public void setIdEscenarios(Escenarios idEscenarios) {
         this.idEscenarios = idEscenarios;
     }
 
+    @JsonBackReference(value = "alquiler_usuario")
     public Usuario getIdUsuario() {
         return idUsuario;
     }

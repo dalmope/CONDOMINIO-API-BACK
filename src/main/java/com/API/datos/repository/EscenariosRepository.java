@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EscenariosRepository extends JpaRepository<Escenarios, Integer> {
-    boolean findByNombre(String nombre);
+    Optional <Escenarios> findByNombre(String nombre);
+    Boolean existsByNombre(String nombre);
     Optional<List<Escenarios>> findByEstado(boolean b);
 }
