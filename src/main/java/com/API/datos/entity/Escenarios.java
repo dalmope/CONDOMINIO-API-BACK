@@ -38,15 +38,28 @@ public class Escenarios implements Serializable {
     private String nombre;
     @Column(name = "descripcion")
     private String descripcion;
+
+    private boolean estado;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEscenarios")
     private Set<Alquiler> alquilerSet;
 
     public Escenarios() {
     }
 
-    public Escenarios(Integer id) {
-        this.id = id;
+    
+
+
+
+    public Escenarios(String nombre, String descripcion, boolean estado) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.estado = estado;
     }
+
+
+
+
 
     public Integer getId() {
         return id;
@@ -71,6 +84,18 @@ public class Escenarios implements Serializable {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+        public boolean getEstado() {
+        return estado;
+    }
+
+   public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
+
+
+
 
     public Set<Alquiler> getAlquilerSet() {
         return alquilerSet;
