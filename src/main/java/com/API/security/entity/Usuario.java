@@ -4,7 +4,6 @@ import javax.persistence.*;
 
 import com.API.datos.entity.Espacio;
 import com.API.datos.entity.Inmuebles;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.HashSet;
