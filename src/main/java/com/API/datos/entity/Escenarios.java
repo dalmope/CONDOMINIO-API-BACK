@@ -6,7 +6,6 @@ package com.API.datos.entity;
 
 import java.io.Serializable;
 import java.util.Set;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,10 +27,10 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "escenarios")
 @NamedQueries({
-    @NamedQuery(name = "Escenarios.findAll", query = "SELECT e FROM Escenarios e"),
-    @NamedQuery(name = "Escenarios.findById", query = "SELECT e FROM Escenarios e WHERE e.id = :id"),
-    @NamedQuery(name = "Escenarios.findByNombre", query = "SELECT e FROM Escenarios e WHERE e.nombre = :nombre"),
-    @NamedQuery(name = "Escenarios.findByDescripcion", query = "SELECT e FROM Escenarios e WHERE e.descripcion = :descripcion")})
+        @NamedQuery(name = "Escenarios.findAll", query = "SELECT e FROM Escenarios e"),
+        @NamedQuery(name = "Escenarios.findById", query = "SELECT e FROM Escenarios e WHERE e.id = :id"),
+        @NamedQuery(name = "Escenarios.findByNombre", query = "SELECT e FROM Escenarios e WHERE e.nombre = :nombre"),
+        @NamedQuery(name = "Escenarios.findByDescripcion", query = "SELECT e FROM Escenarios e WHERE e.descripcion = :descripcion") })
 public class Escenarios implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,8 +57,6 @@ public class Escenarios implements Serializable {
         this.estado = estado;
     }
 
-
-
     public Integer getId() {
         return id;
     }
@@ -84,16 +81,13 @@ public class Escenarios implements Serializable {
         this.descripcion = descripcion;
     }
 
-        public boolean getEstado() {
+    public boolean getEstado() {
         return estado;
     }
 
-   public void setEstado(boolean estado) {
+    public void setEstado(boolean estado) {
         this.estado = estado;
     }
-
-
-
 
     @JsonManagedReference(value = "alquiler_escenario")
     public Set<Alquiler> getAlquilerSet() {
@@ -127,5 +121,5 @@ public class Escenarios implements Serializable {
     public String toString() {
         return "com.mycompany.mavenproject2.resources.newpackage.Escenarios[ id=" + id + " ]";
     }
-    
+
 }
