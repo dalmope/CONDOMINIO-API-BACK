@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import com.API.datos.entity.Mensaje;
+import com.API.datos.services.InmuebleService;
 import com.API.security.entity.Rol;
 import com.API.security.entity.Usuario;
 import com.API.security.enums.RolNombre;
@@ -40,7 +41,6 @@ public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
 
-
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -51,12 +51,15 @@ public class UsuarioController {
     RolService rolService;
 
     @Autowired
+    InmuebleService inmuebleService;
+
+    @Autowired
     JwtProvider jwtProvider;
 
     @ApiOperation("Muestra una lista de usuarios")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<Usuario>> list(){
+    public ResponseEntity<List<Usuario>> list() {
         List<Usuario> list = usuarioService.listar();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
@@ -64,7 +67,7 @@ public class UsuarioController {
     @ApiOperation("Muestra un usuario")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> get(@PathVariable("id")int id){
+    public ResponseEntity<Usuario> get(@PathVariable("id") int id) {
         Usuario usuario = usuarioService.getById(id).get();
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
@@ -72,7 +75,7 @@ public class UsuarioController {
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation("Borra un usuario por ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id")int id){
+    public ResponseEntity<Void> delete(@PathVariable("id") int id) {
         usuarioService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -80,30 +83,37 @@ public class UsuarioController {
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation("Actualiza un usuario")
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> update(@PathVariable("id")int id, @RequestBody Usuario usuario){
+    public ResponseEntity<Usuario> update(@PathVariable("id") int id, @RequestBody Usuario usuario) {
         usuarioService.save(usuario);
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
+    @ApiOperation("Crea un usuario, crea un inmueble si recibe la dirección")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<?> nuevo(@Valid @RequestBody Usuario nuevoUsuario, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
+    public ResponseEntity<?> nuevo(@Valid @RequestBody Usuario nuevoUsuario, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
             return new ResponseEntity<>(new Mensaje("Campos mal puestos o email inválido"), HttpStatus.BAD_REQUEST);
-        if(usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario()))
+        if (usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario()))
             return new ResponseEntity<>(new Mensaje("Ese nombre ya existe"), HttpStatus.BAD_REQUEST);
-        if(usuarioService.existsByEmail(nuevoUsuario.getEmail()))
+        if (usuarioService.existsByEmail(nuevoUsuario.getEmail()))
             return new ResponseEntity<>(new Mensaje("Ese email ya existe"), HttpStatus.BAD_REQUEST);
 
         Set<Rol> roles = new HashSet<>();
         String password = nuevoUsuario.getPassword();
         password = passwordEncoder.encode(nuevoUsuario.getPassword());
         nuevoUsuario.setPassword(password);
-        
+
         roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
-        if(nuevoUsuario.getRoles().contains("ADMIN"))
+        if (nuevoUsuario.getRoles().contains("ADMIN"))
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
         nuevoUsuario.setRoles(roles);
+
+        if (nuevoUsuario.getInmueblesSet() != null)
+            if (inmuebleService.existsByDireccion(nuevoUsuario.getInmueblesSet().iterator().next().getDireccion()))
+                return new ResponseEntity<>(new Mensaje("Ese inmueble ya exisite"), HttpStatus.BAD_REQUEST);
+
+        inmuebleService.save(nuevoUsuario.getInmueblesSet().iterator().next());
 
         usuarioService.save(nuevoUsuario);
         return new ResponseEntity<>(new Mensaje("Usuario guardado"), HttpStatus.CREATED);

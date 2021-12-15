@@ -43,7 +43,7 @@ public class EstadoInmueble implements Serializable {
     private Integer id;
     @Column(name = "estado", nullable = false, length = 255)
     private String estado;
-    @Column(name = "fecha", nullable = false)
+    @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
     public EstadoInmueble() {

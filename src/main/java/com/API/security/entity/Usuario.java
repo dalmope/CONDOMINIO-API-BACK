@@ -54,7 +54,7 @@ public class Usuario {
                     @JoinColumn(name = "rol_id", referencedColumnName = "ID") })
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Rol> roles = new HashSet<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuario")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "idUsuario")
     private Set<Inmuebles> inmueblesSet;
 
     public Usuario() {

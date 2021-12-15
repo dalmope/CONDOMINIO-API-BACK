@@ -1,7 +1,5 @@
 package com.API.datos.controllers;
 
-import java.io.Console;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -62,28 +60,48 @@ public class InmuebleController {
         return new ResponseEntity<>(inmueble, HttpStatus.OK);
     }
 
-    @ApiOperation("Crea un Inmueble")
+    @ApiOperation("Crea un Inmueble, asigna un estado por defecto")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Inmuebles inmueble) {
         if (StringUtils.isBlank(inmueble.getDireccion()))
             return new ResponseEntity<>(new Mensaje("la direccion es obligatoria"), HttpStatus.BAD_REQUEST);
         if (inmuebleService.existsByDireccion(inmueble.getDireccion()))
-            return new ResponseEntity<>(new Mensaje("Esa dirección ya se encuentra registrada"), HttpStatus.BAD_REQUEST);
-    
+            return new ResponseEntity<>(new Mensaje("Esa dirección ya se encuentra registrada"),
+                    HttpStatus.BAD_REQUEST);
+
         Set<EstadoInmueble> estados = new HashSet<>();
-        if(inmueble.getEstadoInmuebleList() != null) {
-            for(EstadoInmueble estado : inmueble.getEstadoInmuebleList()) {
-                if(estado.getId() <= 0) {
+
+        estados.add(new EstadoInmueble(1));
+        System.out.println(estados);
+        inmueble.setEstadoInmuebleList(estados);
+
+        inmuebleService.save(inmueble);
+        return new ResponseEntity<>(new Mensaje("Inmueble creado"), HttpStatus.OK);
+    }
+
+    @ApiOperation("Crea un Inmueble, acepta un estado de inmueble existente")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/estado")
+    public ResponseEntity<?> create(@RequestBody Inmuebles inmueble, @RequestBody EstadoInmueble estadoInmueble) {
+        if (StringUtils.isBlank(inmueble.getDireccion()))
+            return new ResponseEntity<>(new Mensaje("la direccion es obligatoria"), HttpStatus.BAD_REQUEST);
+        if (inmuebleService.existsByDireccion(inmueble.getDireccion()))
+            return new ResponseEntity<>(new Mensaje("Esa dirección ya se encuentra registrada"),
+                    HttpStatus.BAD_REQUEST);
+
+        Set<EstadoInmueble> estados = new HashSet<>();
+        if (inmueble.getEstadoInmuebleList() != null) {
+            for (EstadoInmueble estado : inmueble.getEstadoInmuebleList()) {
+                if (estado.getId() <= 0) {
                     return new ResponseEntity<>(new Mensaje("Id no valido"), HttpStatus.BAD_REQUEST);
                 }
-                if(!inmuebleService.existsById(estado.getId())) {
+                if (!inmuebleService.existsById(estado.getId())) {
                     return new ResponseEntity<>(new Mensaje("No existe el estado solicitado"), HttpStatus.NOT_FOUND);
                 }
                 estados.add(estado);
             }
-        }
-        else {
+        } else {
             estados.add(new EstadoInmueble(1));
             System.out.println(estados);
             inmueble.setEstadoInmuebleList(estados);
@@ -95,12 +113,19 @@ public class InmuebleController {
 
     @ApiOperation("Actualiza un Inmueble")
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody Inmuebles inmueble) {
         if (!inmuebleService.existsById(id))
             return new ResponseEntity<>(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
-        if (inmuebleService.existsByDireccion(inmueble.getDireccion()))
-            return new ResponseEntity<>(new Mensaje("esa direccion ya existe"), HttpStatus.BAD_REQUEST);
+
+        EstadoInmueble estadoInmueble = inmueble.getEstadoInmuebleList().iterator().next();
+        if (estadoInmueble.getId() <= 0) {
+            return new ResponseEntity<>(new Mensaje("Id no valido"), HttpStatus.BAD_REQUEST);
+        }
+        if (!estadoInmuebleService.existsById(estadoInmueble.getId())) {
+            return new ResponseEntity<>(new Mensaje("No existe el estado solicitado"), HttpStatus.NOT_FOUND);
+        }
+
         inmuebleService.save(inmueble);
         return new ResponseEntity<>(new Mensaje("Inmueble actualizado"), HttpStatus.OK);
     }
@@ -118,11 +143,11 @@ public class InmuebleController {
     // @ApiOperation("Obtiene una lista de Inmuebles por su estado")
     // @GetMapping("/estado/{estado}")
     // public ResponseEntity<?> getByEstado(@PathVariable("estado") String estado) {
-    //     if (StringUtils.isBlank(estado))
-    //         return new ResponseEntity<>(new Mensaje("el estado es obligatorio"), HttpStatus.BAD_REQUEST);
-    //     List<Inmuebles> list = inmuebleService.getByEstado(estado);
-    //     return new ResponseEntity<>(list, HttpStatus.OK);
+    // if (StringUtils.isBlank(estado))
+    // return new ResponseEntity<>(new Mensaje("el estado es obligatorio"),
+    // HttpStatus.BAD_REQUEST);
+    // List<Inmuebles> list = inmuebleService.getByEstado(estado);
+    // return new ResponseEntity<>(list, HttpStatus.OK);
     // }
-    
 
 }
