@@ -1,10 +1,13 @@
 package com.API.datos.controllers;
 
+import java.util.Date;
 import java.util.List;
 
 import com.API.datos.entity.Cuenta;
 import com.API.datos.entity.Mensaje;
 import com.API.datos.services.CuentaService;
+import com.API.datos.services.EstadoCuentaService;
+import com.API.datos.services.InmuebleService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +30,12 @@ public class CuentaController {
     @Autowired
     CuentaService CuentaService;
 
+    @Autowired
+    EstadoCuentaService estadoCuentaService;
+
+    @Autowired
+    InmuebleService inmuebleService;
+
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation("Muestra una lista de Estados de cuenta")
     @GetMapping
@@ -39,8 +48,23 @@ public class CuentaController {
     @ApiOperation("Muestra una lista de Estados de cuenta")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Cuenta cuenta) {
+        Date hoy = new Date();
+
+        if (cuenta.getFechaLimite().before(hoy)) {
+            return new ResponseEntity<>(new Mensaje("Fecha Limite no puede ser menor a la fecha actual"), HttpStatus.OK);
+        }
+
+        if(cuenta.getFechaLimite().after(hoy)){
+            cuenta.setEstadoId(estadoCuentaService.getOne(2).get());
+            if(cuenta.getMesesMora() > 5){
+                cuenta.setEstadoId(estadoCuentaService.getOne(3).get());
+            }
+        }
+
+        cuenta.setIdInmueble(inmuebleService.getOne(cuenta.getIdInmueble().getId()).get());
+
         CuentaService.save(cuenta);
-        return new ResponseEntity<>(new Mensaje("Cuenta Creado"), HttpStatus.OK);
+        return new ResponseEntity<>(new Mensaje("Cuenta creada con exito"), HttpStatus.OK);
     }
 
     

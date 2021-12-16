@@ -64,10 +64,10 @@ public class Cuenta implements Serializable {
     @Basic(optional = false)
     @Column(name = "recargo", nullable = false)
     private float recargo;
-    @JoinColumn(name = "estado_id", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "estado_id", referencedColumnName = "ID")
     @ManyToOne
     private EstadoCuenta estadoId;
-    @JoinColumn(name = "id_inmueble", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "id_inmueble", referencedColumnName = "ID")
     @ManyToOne
     private Inmuebles idInmueble;
     @JsonIgnore
