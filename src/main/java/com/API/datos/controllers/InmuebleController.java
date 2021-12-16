@@ -99,10 +99,10 @@ public class InmuebleController {
                 if (!inmuebleService.existsById(estado.getId())) {
                     return new ResponseEntity<>(new Mensaje("No existe el estado solicitado"), HttpStatus.NOT_FOUND);
                 }
-                estados.add(estado);
+                estados.add(estadoInmuebleService.getOne(estado.getId()));
             }
         } else {
-            estados.add(new EstadoInmueble(1));
+            estados.add(estadoInmuebleService.getOne(1));
             System.out.println(estados);
             inmueble.setEstadoInmuebleList(estados);
         }
