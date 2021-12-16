@@ -55,9 +55,9 @@ public class Usuario {
                     @JoinColumn(name = "rol_id", referencedColumnName = "ID") })
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Rol> roles = new HashSet<>();
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "idUsuario")
     private Set<Inmuebles> inmueblesSet;
-
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEscenarios")
     private Set<Alquiler> alquilerSet;

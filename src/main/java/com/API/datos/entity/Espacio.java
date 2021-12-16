@@ -51,6 +51,7 @@ public class Espacio implements Serializable {
     @JsonIgnore
     @ManyToMany(mappedBy = "espacioSet")
     private Set<Usuario> usuarioSet;
+    @JsonIgnore
     @JoinTable(name = "estado_estadoespacio", joinColumns = {
             @JoinColumn(name = "id_espacio", referencedColumnName = "ID") }, inverseJoinColumns = {
                     @JoinColumn(name = "id_estado", referencedColumnName = "ID") })

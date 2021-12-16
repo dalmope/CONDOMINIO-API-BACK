@@ -48,6 +48,7 @@ public class Inmuebles implements Serializable {
     @Basic(optional = false)
     @Column(name = "direccion", nullable = false, length = 255)
     private String direccion;
+    @JsonIgnore
     @JoinTable(name = "estado_estadoinmueble", joinColumns = {
         @JoinColumn(name = "id_estadoInmueble", referencedColumnName = "ID")}, inverseJoinColumns = {
         @JoinColumn(name = "id_inmueble", referencedColumnName = "ID")})
