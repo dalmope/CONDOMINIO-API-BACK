@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import com.API.datos.entity.Inmuebles;
 import com.API.datos.entity.Mensaje;
 import com.API.datos.services.InmuebleService;
 import com.API.security.entity.Rol;
@@ -110,33 +109,17 @@ public class UsuarioController {
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
         nuevoUsuario.setRoles(roles);
 
-        usuarioService.save(nuevoUsuario);
+        try {
+            if (inmuebleService.existsByDireccion(nuevoUsuario.getInmueblesSet().iterator().next().getDireccion())) {
+                return new ResponseEntity<>(new Mensaje("El inmueble ya existe"), HttpStatus.BAD_REQUEST);
+            }
+            usuarioService.save(nuevoUsuario);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new Mensaje("Es necesaria una direccion Valida"), HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(new Mensaje("Usuario guardado"), HttpStatus.CREATED);
     }
 
-    @ApiOperation("Crea un usuario, crea un inmueble si recibe la dirección")
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody Usuario nuevoUsuario, BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-            return new ResponseEntity<>(new Mensaje("Campos mal puestos o email inválido"), HttpStatus.BAD_REQUEST);
-        if (usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario()))
-            return new ResponseEntity<>(new Mensaje("Ese nombre ya existe"), HttpStatus.BAD_REQUEST);
-        if (usuarioService.existsByEmail(nuevoUsuario.getEmail()))
-            return new ResponseEntity<>(new Mensaje("Ese email ya existe"), HttpStatus.BAD_REQUEST);
-
-        Set<Rol> roles = new HashSet<>();
-        String password = nuevoUsuario.getPassword();
-        password = passwordEncoder.encode(nuevoUsuario.getPassword());
-        nuevoUsuario.setPassword(password);
-
-        roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
-        if (nuevoUsuario.getRoles().contains("ADMIN"))
-            roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
-        nuevoUsuario.setRoles(roles);
-
-        usuarioService.save(nuevoUsuario);
-        return new ResponseEntity<>(new Mensaje("Usuario guardado"), HttpStatus.CREATED);
-    }
 
 }
