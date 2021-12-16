@@ -34,6 +34,17 @@ public class EscenariosService {
         return escenariosRepository.existsByNombre(nombre);
     }
 
+    public Boolean deleteEstado(int id){
+       return this.changeStatus(id, false);
+    }
+
+    public Boolean changeStatus(int id, boolean status){
+        Escenarios escenario = escenariosRepository.getOne(id);
+        escenario.setEstado(status);
+        escenariosRepository.save(escenario);
+        return escenario.getEstado();
+    }
+
     public void save(Escenarios Escenario){
         escenariosRepository.save(Escenario);
     }

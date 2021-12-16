@@ -54,5 +54,33 @@ public class EscenariosController {
         escenariosService.save(escenarioNuevo);
         return new ResponseEntity<>(new Mensaje("Escenario creado"), HttpStatus.OK);
     }
+
+    @ApiOperation("Actualiza un Escenario")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable("id")int id, @RequestBody Escenarios escenario){
+        if(!escenariosService.existsById(id))
+            return new ResponseEntity<>(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
+
+        Escenarios escenarios = escenariosService.getOne(id);
+        escenarios.setNombre(escenario.getNombre());
+        escenarios.setDescripcion(escenario.getDescripcion());
+        escenarios.setEstado(escenario.getEstado());
+        escenariosService.save(escenarios);
+        return new ResponseEntity<>(new Mensaje("cliente actualizado"), HttpStatus.OK);
+    }
+
+         @ApiOperation("Elimina un Escenario, cambiando su estado a false")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id")int id){
+        if(!escenariosService.existsById(id))
+            return new ResponseEntity<>(new Mensaje("no existe"), HttpStatus.NOT_FOUND);
+        //Boolean estado = escenariosService.deleteEstado(id);
+
+        escenariosService.delete(id);
+        // return new ResponseEntity<>(new Mensaje("Cliente eliminado, estado: " + estado ), HttpStatus.OK);
+        return new ResponseEntity<>(new Mensaje("Escenario eliminado"), HttpStatus.OK);
+    }
     
 }
